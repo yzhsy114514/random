@@ -14,7 +14,7 @@ CXXFLAGS := -std=c++23 -Isrc  # 添加头文件搜索路径
 LDFLAGS :=
 
 # 目标可执行文件
-TARGET := main
+TARGET := gachas
 
 # 源文件和头文件路径
 SRC_DIR := src
@@ -37,7 +37,10 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(HDRS)
 clean:
 	rm -f $(OBJS) $(TARGET)
 
-.PHONY: all clean
+install:
+	mv $(TARGET) /bin/
+
+.PHONY: all clean install
 EOF
 
 echo "Makefile 已生成，可使用 make 命令编译"
