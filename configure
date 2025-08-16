@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# 检查 g++-15 是否存在
+if ! command -v g++-14 &> /dev/null; then
+    echo "错误: 未找到 g++-14 编译器，请先安装！" >&2
+    exit 1
+fi
+
+# 生成 Makefile 内容
+cat > Makefile << 'EOF'
+# 编译器设置
+CXX := g++-14  # 使用检测到的 g++-15
+CXXFLAGS := -std=c++23 -Isrc  # 添加头文件搜索路径
+LDFLAGS :=
+
+# 目标可执行文件
+TARGET := main
+
+# 源文件和头文件路径
+SRC_DIR := src
+SRCS := $(SRC_DIR)/main.cpp $(SRC_DIR)/Random.cpp $(SRC_DIR)/gacha.cpp
+HDRS := $(SRC_DIR)/Random.hpp $(SRC_DIR)/gacha.hpp
+OBJS := $(SRCS:.cpp=.o)
+
+# 默认目标
+all: $(TARGET)
+
+# 生成可执行文件
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+# 编译规则：将 .cpp 文件生成 .o 文件
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(HDRS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# 清理生成的文件
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: all clean
+EOF
+
+echo "Makefile 已生成，可使用 make 命令编译"
